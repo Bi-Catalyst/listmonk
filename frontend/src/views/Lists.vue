@@ -99,7 +99,10 @@
         <div class="fields stats">
           <p v-for="(count, status) in filterStatuses(props.row)" :key="status">
             <label>{{ $tc(`subscribers.status.${status}`, count) }}</label>
-            <span :class="status">{{ $utils.formatNumber(count) }}</span>
+            <router-link :to="`/subscribers/lists/${props.row.id}?subscription_status=${status}`"
+              :class="status">
+              {{ $utils.formatNumber(count) }}
+            </router-link>
           </p>
         </div>
       </b-table-column>
@@ -237,6 +240,10 @@ export default Vue.extend({
       }).then((resp) => {
         this.lists = resp;
       });
+
+      // Also fetch the minimal lists for the global store that appears
+      // in dropdown menus on other pages like import and campaigns.
+      this.$api.getLists({ minimal: true, per_page: 'all' });
     },
 
     deleteList(list) {
