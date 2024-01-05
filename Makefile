@@ -13,9 +13,10 @@ FRONTEND_YARN_MODULES = frontend/node_modules
 FRONTEND_DIST = frontend/dist
 FRONTEND_DEPS = \
 	$(FRONTEND_YARN_MODULES) \
+	frontend/index.html \
 	frontend/package.json \
-	frontend/vue.config.js \
-	frontend/babel.config.js \
+	frontend/vite.config.js \
+	frontend/.eslintrc.js \
 	$(shell find frontend/fontello frontend/public frontend/src -type f)
 
 BIN := listmonk
@@ -57,7 +58,7 @@ build-frontend: $(FRONTEND_DIST)
 # Run the JS frontend server in dev mode.
 .PHONY: run-frontend
 run-frontend:
-	export VUE_APP_VERSION="${VERSION}" && cd frontend && $(YARN) serve
+	export VUE_APP_VERSION="${VERSION}" && cd frontend && $(YARN) dev
 
 # Run Go tests.
 .PHONY: test

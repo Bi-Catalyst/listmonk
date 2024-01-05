@@ -30,6 +30,7 @@ type tplRenderer struct {
 	RootURL             string
 	LogoURL             string
 	FaviconURL          string
+	AssetVersion        string
 	EnablePublicSubPage bool
 	EnablePublicArchive bool
 }
@@ -41,6 +42,7 @@ type tplData struct {
 	RootURL             string
 	LogoURL             string
 	FaviconURL          string
+	AssetVersion        string
 	EnablePublicSubPage bool
 	EnablePublicArchive bool
 	Data                interface{}
@@ -94,6 +96,7 @@ func (t *tplRenderer) Render(w io.Writer, name string, data interface{}, c echo.
 		RootURL:             t.RootURL,
 		LogoURL:             t.LogoURL,
 		FaviconURL:          t.FaviconURL,
+		AssetVersion:        t.AssetVersion,
 		EnablePublicSubPage: t.EnablePublicSubPage,
 		EnablePublicArchive: t.EnablePublicArchive,
 		Data:                data,
@@ -705,11 +708,12 @@ func processSubForm(c echo.Context) (bool, error) {
 				return false, err
 			}
 
-			if _, err := app.core.UpdateSubscriberWithLists(sub.ID, sub, nil, listUUIDs, false, false); err != nil {
+			_, hasOptin, err := app.core.UpdateSubscriberWithLists(sub.ID, sub, nil, listUUIDs, false, false)
+			if err != nil {
 				return false, err
 			}
 
-			return false, nil
+			return hasOptin, nil
 		}
 
 		return false, echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%s", err.(*echo.HTTPError).Message))
